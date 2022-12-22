@@ -1,17 +1,12 @@
-# "React Login Form with Authentication, Axios, and Accessibility"
+서버 연결을 위해 Axios를 사용했습니다. 
 
-✅ [Check out my YouTube Channel with all of my tutorials](https://www.youtube.com/DaveGrayTeachesCode).
+App.js-> 전체 구조(연결)
+Home.js-> 메인 페이지
+Login.js-> 로그인 화면
+Register.js-> 회원가입 화면
 
-**Description:**
-
-This repository shares the code applied during the [YouTube Tutorial](https://youtu.be/X3qyxo_UTR4). 
-
-Build the backend REST API that I test this registration form with in my [7 hour Node JS for Beginners course](https://youtu.be/f2EqECiTBL8) on my channel.
-
-Just starting with React? I have a [9 hour React course tutorial video](https://youtu.be/RVFAyFWO4go) on my channel.  
-
-I suggest completing my [8 hour JavaScript course tutorial video](https://youtu.be/EfAl9bwzVZk) before attempting React if you are new to Javascript.
-
-### Academic Honesty
-
-**DO NOT COPY FOR AN ASSIGNMENT** - Avoid plagiargism and adhere to the spirit of this [Academic Honesty Policy](https://www.freecodecamp.org/news/academic-honesty-policy/).
+아래는 수정한 변수입니다
+이름 name-> username
+전화번호 phone
+이메일(아이디)username& user-> email
+비밀번호 password
