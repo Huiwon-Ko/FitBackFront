@@ -1,89 +1,34 @@
 import React from 'react';
-import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
-import axios from 'axios' 
-/*import GoogleLogin from '@react-oauth/google';
-import { GoogleOAuthProvider } from '@react-oauth/google'; */
+import GoogleLogin from 'react-google-login';
 
+const clientId = "372495721999-tkdujncr3rjq27huenf9en6ja1v48tid.apps.googleusercontent.com"; //client 아이디입니다. 
 
-function GoogleButton(){
-    const clientId = '372495721999-tkdujncr3rjq27huenf9en6ja1v48tid.apps.googleusercontent.com';
-
-    
+export default function GoogleButton({ onSocial }){
     const onSuccess = async(response) => {
     	console.log(response);
+    
+        const { googleId, profileObj : { email, name } } = response; 
         
-        const result = response.profileObj
-        const token = response.tokenId
-
-        let body = {
-            data: {
-                profile: result,
-                tokenId: token
-            }
-        }
-
-        axios.post('/api/google/login', body)
-        .then(response =>{
-            console.log('구글로그인 성공');
-        })
-        .catch(err => alert(err))
+        await onSocial({
+            socialId : googleId,
+            socialType : 'google',
+            email,
+            nickname : name 
+        });
     }
+
     const onFailure = (error) => {
-        console.log(error);
+        console.log(error); //에러 발생 시 
     }
 
     return(
         <div>
-            <GoogleOAuthProvider clientId={clientId}>
-                <GoogleLogin
-                    clientId={clientId}
-                    onSuccess={onSuccess}
-                    onFailure={onFailure}
-                    cookiePolicy="single_host_origin"
-                />
-            </GoogleOAuthProvider>
+            <GoogleLogin
+                buttonText="Google아이디로 로그인"
+                clientId={clientId}
+                responseType={"id_token"}
+                onSuccess={onSuccess}
+                onFailure={onFailure}/>
         </div>
     )
-}
-
-export default GoogleButton 
-
-/*
-import React, { useCallback, useEffect } from "react";
-import GoogleLogin from 'react-google-login';
-import { gapi } from 'gapi-script';
-
-const clientId = '372495721999-tkdujncr3rjq27huenf9en6ja1v48tid.apps.googleusercontent.com'
-
-const GoogleButton = ({ onSocial }) => {
-    useEffect(() => {
-        function start() {
-            gapi.client.init({
-                clientId,
-                scope: 'email',
-            });
-        }
-
-        gapi.load('clent:auth2', start);
-    }, []);
-
-    const onSuccess = (response) => {
-        console.log(response);
-    };
-
-    const onFailure = (response) => {
-        console.log(response);
-    };
-
-    return (
-        <div>
-            <GoogleLogin
-                clientId={clientId}
-                onSuccess={onSuccess}
-                onFailure={onFailure}
-            />
-        </div>
-    );
-};
-
-export default GoogleButton; */
+} 

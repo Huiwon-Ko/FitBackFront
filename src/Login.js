@@ -2,19 +2,21 @@ import { useRef, useState, useEffect, useContext } from 'react';
 import AuthContext from "./context/AuthProvider";
 import { Link } from "react-router-dom"
 import GoogleButton from './components/GoogleButton';
+import NaverButton from './components/NaverButton';
 import './css/Login_Register.css';
 
 import axios from './api/axios';
-import Register from './Register';
 const LOGIN_URL = '/auth';
 
 const Login = () => {
+    const baseUrl = "http://localhost:8080"; //수정한 부분(baseURL)
+
     const { setAuth } = useContext(AuthContext);
     const userRef = useRef();
     const errRef = useRef();
 
-    const [user, setUser] = useState('');
-    const [pwd, setPwd] = useState('');
+    const [email, setUser] = useState('');  //총 4개의 변수입니다
+    const [password, setPwd] = useState('');
     const [errMsg, setErrMsg] = useState('');
     const [success, setSuccess] = useState(false);
 
@@ -24,14 +26,14 @@ const Login = () => {
 
     useEffect(() => {
         setErrMsg('');
-    }, [user, pwd])
+    }, [email, password])
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         try {
-            const response = await axios.post(LOGIN_URL,
-                JSON.stringify({ user, pwd }),
+            const response = await axios.post(baseUrl+ LOGIN_URL+ "/login", //여기 post뒤에 해당 내용을 post 할 링크를 넣습니다  
+                JSON.stringify({ email, password }),
                 {
                     headers: { 'Content-Type': 'application/json' },
                     withCredentials: true
@@ -41,13 +43,13 @@ const Login = () => {
             //console.log(JSON.stringify(response));
             const accessToken = response?.data?.accessToken;
             const roles = response?.data?.roles;
-            setAuth({ user, pwd, roles, accessToken });
+            setAuth({ email, password, roles, accessToken });
             setUser('');
             setPwd('');
             setSuccess(true);
         } catch (err) {
             if (!err?.response) {
-                setErrMsg('No Server Response');
+                setErrMsg('No Server Response'); //각 상황에 따른 오류
             } else if (err.response?.status === 400) {
                 setErrMsg('Missing Username or Password');
             } else if (err.response?.status === 401) {
@@ -64,24 +66,24 @@ const Login = () => {
             {success ? (
                 <section>
                     <h1>로그인 되었습니다</h1>
-                    <br />
+                    <br /*(아래) 로그인 성공 후 이동할 페이지 입니다. 현재는 홈 화면으로 설정해두었습니다. */ />
                     <p>
-                        <a href="#">Home</a>
+                        <a href="#">Home</a>  
                     </p>
                 </section>
             ) : (
                 <section>
                     <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
-                    <h1>로그인</h1>
+                    <h1>로그인</h1> 
                     <form onSubmit={handleSubmit}>
-                        <label htmlFor="username">ID</label>
+                        <label htmlFor="email">ID</label>
                         <input
                             type="text"
-                            id="username"
+                            id="email"
                             ref={userRef}
                             autoComplete="off"
                             onChange={(e) => setUser(e.target.value)}
-                            value={user}
+                            value={email}
                             required
                         />
 
@@ -90,7 +92,7 @@ const Login = () => {
                             type="password"
                             id="password"
                             onChange={(e) => setPwd(e.target.value)}
-                            value={pwd}
+                            value={password}
                             required
                         />
                         <button>로그인</button>
@@ -101,7 +103,8 @@ const Login = () => {
                             <Link to="/Register">회원가입 하기</Link>
                         </span>
                     </p>
-                    < GoogleButton />
+                    < GoogleButton /*구글 로그인 페이지로 이동합니다.*//>
+                    < NaverButton /*네이버 로그인 페이지로 이동합니다.*//>
                 </section>
             )}
         </>
